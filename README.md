@@ -3,6 +3,8 @@
 这是一个针对 seo 的后端渲染，可以在步修改前端代码的情况下使 spa 的网站返回完整的渲染好的 html ，
 仅针对搜索引擎的爬虫，普通用户访问时还是前端渲染
 
+如果遇到什么问题，十分欢迎提 issues
+
 ## 依赖
 - python 3.9
 - playwright 1.8.0a1
@@ -42,6 +44,7 @@ docker run --restart always -d \
 - 修改 hosts 文件，在内网访问网站能大幅提高速度
 - 使用 docker 部署时要注意容器的 ip ，特别是容器访问宿主机时的 ip ，上面的 docker 启动命令仅供参考
 - 这个方案不是很完美， python 自带的 http 服务并不能很好地应付大的并发，虽然大部分情况下针对爬虫不会有高的并发，首屏渲染的速度不能太慢，遇到懒加载的图片可能会加载不完整
+- python 的 ThreadingMixIn 好像有内存泄漏，最好弄个定时任务定时重启
 - 可以使用这样的命令测试是否生效，如果返回的是渲染好的 html ，则表示已经生效
 ```
 curl -L --user-agent "bing" 网址
@@ -56,4 +59,35 @@ curl -o /dev/null -s -w %{time_namelookup}::%{time_connect}::%{time_starttransfe
     if ($http_user_agent ~* "(bing|yandex|yahoo|Yisou|baidu|360|sogou|APIs-Google|Mediapartners-Google|AdsBot-Google-Mobile|AdsBot-Google-Mobile|AdsBot-Google|Googlebot|Googlebot-Image|Googlebot-News|Googlebot-Video|Mediapartners-Google|AdsBot-Google-Mobile-Apps|FeedFetcher-Google|Google-Read-Aloud|DuplexWeb-Google|Google Favicon|googleweblight|Storebot-Google)"){
         proxy_pass http://127.0.0.1:8081;
     }
+```
+
+这个是作者部署在生产环境时的大致的架构图
+```
+                                               普通用户的访问      +--------------+
+                                                                  |              |
+                                            +-------------------> |     spa      |
+                                            |                     |              |
+                                            |                     +--------------+
+                                            |
+                                            |
++--------------+                  +---------+----+
+|              |                  |              |
+|    浏览器    +----------------->+    nginx     |
+|              |                  |              | <---------------------------+
++--------------+                  +----------+---+                             |
+                                             |                                 |
+                                             |                                 |
+                                             |                                 |
+                                             |                                 |
+                                             |                                 |
+                    根据ua判断搜索引擎的爬虫   |                                 |  模拟普通用户的访问
+                                             |                                 |
+                                             |                                 |
+                                             |                                 |
+                                             |                                 |
+                                             |                     +-----------+--+
+                                             |                     |              |
+                                             +-------------------> |   seo_ssr    |
+                                                                   |              |
+                                                                   +--------------+
 ```
