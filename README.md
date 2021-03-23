@@ -1,6 +1,6 @@
 针对 seo 的后端渲染
 ====================
-这是一个针对 seo 的后端渲染，可以在步修改前端代码的情况下使 spa 的网站返回完整的渲染好的 html ，
+这是一个针对 seo 的后端渲染，可以在不修改前端代码的情况下使 spa 的网站返回完整的渲染好的 html ，
 仅针对搜索引擎的爬虫，普通用户访问时还是前端渲染
 
 如果遇到什么问题，十分欢迎提 issues
@@ -59,6 +59,11 @@ curl -o /dev/null -s -w %{time_namelookup}::%{time_connect}::%{time_starttransfe
     if ($http_user_agent ~* "(bing|yandex|yahoo|Yisou|baidu|360|sogou|APIs-Google|Mediapartners-Google|AdsBot-Google-Mobile|AdsBot-Google-Mobile|AdsBot-Google|Googlebot|Googlebot-Image|Googlebot-News|Googlebot-Video|Mediapartners-Google|AdsBot-Google-Mobile-Apps|FeedFetcher-Google|Google-Read-Aloud|DuplexWeb-Google|Google Favicon|googleweblight|Storebot-Google)"){
         proxy_pass http://127.0.0.1:8081;
     }
+```
+
+这是定时重启的 cron ，每天的 2 点重启，最好用 root 用户来执行
+```
+0 0 2 * * ? * docker restart seo
 ```
 
 这个是作者部署在生产环境时的大致的架构图
