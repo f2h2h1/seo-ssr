@@ -34,9 +34,10 @@ def getSourceCode(url, ua):
 		if user_agent != None:
 			ua = user_agent
 		if images_enabled == True:
-			browser_context = p.chromium.launch_persistent_context(args=['--blink-settings=imagesEnabled=false'], devtools=devtools, headless=headless, user_data_dir='./playwright_temp/user', user_agent=ua, viewport=windowSize, is_mobile=isMobile)
+			args = ['--blink-settings=imagesEnabled=false']
 		else:
-			browser_context = p.chromium.launch_persistent_context(devtools=devtools, headless=headless, user_data_dir='./playwright_temp/user', user_agent=ua, viewport=windowSize, is_mobile=isMobile)
+			args = None
+		browser_context = p.chromium.launch_persistent_context(args=args, executable_path=executablePath, devtools=devtools, headless=headless, user_data_dir='./playwright_temp/user', user_agent=ua, viewport=windowSize, is_mobile=isMobile)
 		browser = browser_context
 		page = browser.new_page()
 
@@ -176,9 +177,11 @@ if __name__ == '__main__':
 	hostUrl = hostUrl.strip()
 	user_agent = items.get('user_agent')
 	ua = None
-	# executablePath = items.get('executable_path')
-	# if executablePath != None:
-	# 	executablePath = executablePath.strip()
+	executablePath = items.get('executable_path')
+	if executablePath != None:
+		executablePath = executablePath.strip()
+		if not os.path.isfile(executablePath):
+			executablePath = None
 
 	pc_window_size = items.get('pc_window_size')
 	pc_window_w = 1920
