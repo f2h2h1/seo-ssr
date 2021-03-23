@@ -31,11 +31,12 @@ def getSourceCode(url, ua):
 		# browser_context = p.chromium.launch_persistent_context(user_data_dir='./playwright_temp/user', viewport=windowSize, is_mobile=isMobile)
 		if devtools == True and isMobile == True:
 			windowSize['width'] = windowSize['width'] * 2
-
+		if user_agent != None:
+			ua = user_agent
 		if images_enabled == True:
-			browser_context = p.chromium.launch_persistent_context(args=['--blink-settings=imagesEnabled=false'], devtools=devtools, headless=headless, user_data_dir='./playwright_temp/user', viewport=windowSize, is_mobile=isMobile)
+			browser_context = p.chromium.launch_persistent_context(args=['--blink-settings=imagesEnabled=false'], devtools=devtools, headless=headless, user_data_dir='./playwright_temp/user', user_agent=ua, viewport=windowSize, is_mobile=isMobile)
 		else:
-			browser_context = p.chromium.launch_persistent_context(devtools=devtools, headless=headless, user_data_dir='./playwright_temp/user', viewport=windowSize, is_mobile=isMobile)
+			browser_context = p.chromium.launch_persistent_context(devtools=devtools, headless=headless, user_data_dir='./playwright_temp/user', user_agent=ua, viewport=windowSize, is_mobile=isMobile)
 		browser = browser_context
 		page = browser.new_page()
 
@@ -53,10 +54,12 @@ class myHTTPServerRequestHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		# print(self)
 		url = hostUrl + self.path
+		ua = None
 		ua = self.headers['user-agent']
 		if (ua == None):
-			ua = 'ua is empty'
-		print(url+'    '+ua)
+			print(url+'    ua is empty')
+		else:
+			print(url+'    '+ua)
 
 		proxy_flg = False
 		for i in pathList:
@@ -69,7 +72,18 @@ class myHTTPServerRequestHandler(BaseHTTPRequestHandler):
 
 		if proxy_flg == True:
 			# 构造请求对象,并添加请求头
-			req = request.Request(url)
+			if user_agent != None:
+				headers = {
+					'User-Agent': user_agent
+				}
+				req = request.Request(url=url, headers=headers)
+			elif ua != None:
+				headers = {
+					'User-Agent': ua
+				}
+				req = request.Request(url=url, headers=headers)
+			else:
+				req = request.Request(url=url)
 			# 发起请求
 			resp = request.urlopen(req)
 			# print(resp.getcode())
@@ -160,6 +174,8 @@ if __name__ == '__main__':
 	port = port.strip()
 	hostUrl = items.get('hosturl')
 	hostUrl = hostUrl.strip()
+	user_agent = items.get('user_agent')
+	ua = None
 	# executablePath = items.get('executable_path')
 	# if executablePath != None:
 	# 	executablePath = executablePath.strip()
