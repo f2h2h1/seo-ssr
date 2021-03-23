@@ -3,7 +3,7 @@
     function frame() {
         let end = document.documentElement.scrollHeight;
         if (document.documentElement.clientHeight == document.documentElement.scrollHeight) {
-            // 刚触发 load 事件时，页面也能未加载好， 导致 clientHeight 会等于 scrollHeight
+            // 刚触发 load 事件时，页面可能未加载好， 导致 clientHeight 会等于 scrollHeight
             end = document.documentElement.clientHeight * 3;
         }
         if(document.documentElement.scrollTop + document.documentElement.clientHeight < end) {
