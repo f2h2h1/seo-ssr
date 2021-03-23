@@ -20,6 +20,10 @@
             }
         }
     }
+    let noscript = document.evaluate('//noscript', document); // 删掉 noscript 标签
+    for (let d = noscript.iterateNext(); d != null; d = noscript.iterateNext()) {
+        scriptTagArr.push(d);
+    }
     for (let i = 0; i < scriptTagArr.length; i++) {
         scriptTagArr[i].parentNode.removeChild(scriptTagArr[i]);
     }
