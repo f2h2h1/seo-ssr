@@ -40,16 +40,16 @@ docker run --restart always -d \
 ```
 
 ## 提示
-- 部署到线上的时候，需要根据搜索引擎的爬虫来转发请求，一般是通过 ua 来判断的
+- **部署到线上的时候，需要根据搜索引擎的爬虫来转发请求，一般是通过 ua 来判断的**
 - 修改 hosts 文件，在内网访问网站能大幅提高速度
 - 使用 docker 部署时要注意容器的 ip ，特别是容器访问宿主机时的 ip ，上面的 docker 启动命令仅供参考
 - 这个方案不是很完美， python 自带的 http 服务并不能很好地应付大的并发，虽然大部分情况下针对爬虫不会有高的并发，首屏渲染的速度不能太慢，遇到懒加载的图片可能会加载不完整
-- python 的 ThreadingMixIn 好像有内存泄漏，最好弄个定时任务定时重启
-- 可以使用这样的命令测试是否生效，如果返回的是渲染好的 html ，则表示已经生效
+- python 的 ThreadingMixIn 好像有内存泄漏（~~其实就是自己的代码没写好~~），最好弄个定时任务定时重启
+- 可以在服务器里使用这样的命令测试是否生效，如果返回的是渲染好的 html ，则表示已经生效
 ```
-curl -L --user-agent "bing" 网址
+curl "http://127.0.0.1:8081"
 ```
-- 可以使用这样的命令来测试页面的响应速度
+- 可以在服务器里使用这样的命令来测试页面的响应速度
 ```bash
 curl -o /dev/null -s -w %{time_namelookup}::%{time_connect}::%{time_starttransfer}::%{time_total}::%{speed_download}"\n" "http://127.0.0.1:8081"
 ```
@@ -59,6 +59,11 @@ curl -o /dev/null -s -w %{time_namelookup}::%{time_connect}::%{time_starttransfe
     if ($http_user_agent ~* "(bing|yandex|yahoo|Yisou|baidu|360|sogou|APIs-Google|Mediapartners-Google|AdsBot-Google-Mobile|AdsBot-Google-Mobile|AdsBot-Google|Googlebot|Googlebot-Image|Googlebot-News|Googlebot-Video|Mediapartners-Google|AdsBot-Google-Mobile-Apps|FeedFetcher-Google|Google-Read-Aloud|DuplexWeb-Google|Google Favicon|googleweblight|Storebot-Google)"){
         proxy_pass http://127.0.0.1:8081;
     }
+```
+
+- 可以使用这样的命令测试 nginx 的转发是否生效，如果返回的是渲染好的 html ，则表示已经生效
+```
+curl -L --user-agent "bing" 网址
 ```
 
 这是定时重启的 cron ，每天的 2 点重启，最好用 root 用户来执行
