@@ -7,12 +7,12 @@
 
 ## 依赖
 - python 3.9
-- playwright 1.8.0a1
+- playwright 1.10.0
 - Chrome 80-90 之间的版本
 
 ## 安装
 0. 安装 python ，并把 python 加入到环境变量
-0. 安装 playwright ， `python -m pip install playwright==1.8.0a1`
+0. 安装 playwright ， `python -m pip install playwright==1.10.0`
 0. 安装驱动用的浏览器，`python -m playwright install`
 0. clone 项目
 0. 复制 config-template.ini ，并重命名为 config.ini ，然后根据注释的提示修改配置
