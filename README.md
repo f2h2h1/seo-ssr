@@ -56,7 +56,7 @@ curl -o /dev/null -s -w %{time_namelookup}::%{time_connect}::%{time_starttransfe
 
 这是 nginx 大概的转发配置
 ```
-    if ($http_user_agent ~* "(bing|yandex|yahoo|Yisou|baidu|360|sogou|APIs-Google|Mediapartners-Google|AdsBot-Google-Mobile|AdsBot-Google-Mobile|AdsBot-Google|Googlebot|Googlebot-Image|Googlebot-News|Googlebot-Video|Mediapartners-Google|AdsBot-Google-Mobile-Apps|FeedFetcher-Google|Google-Read-Aloud|DuplexWeb-Google|Google Favicon|googleweblight|Storebot-Google)"){
+    if ($http_user_agent ~* "(Applebot|bing|yandex|yahoo|Yisou|baidu|360|sogou|APIs-Google|Mediapartners-Google|AdsBot-Google-Mobile|AdsBot-Google-Mobile|AdsBot-Google|Googlebot|Googlebot-Image|Googlebot-News|Googlebot-Video|Mediapartners-Google|AdsBot-Google-Mobile-Apps|FeedFetcher-Google|Google-Read-Aloud|DuplexWeb-Google|Google Favicon|googleweblight|Storebot-Google)"){
         proxy_pass http://127.0.0.1:8081;
     }
 ```
